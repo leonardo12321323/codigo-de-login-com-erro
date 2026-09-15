@@ -1,0 +1,422 @@
+package estudos_4;
+
+import java.awt.Event;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.imageio.plugins.tiff.ExifGPSTagSet;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import javax.swing.JLabel;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+class Perfil{
+	
+	double saldo;
+	String nome;
+	String senha;
+	
+}
+
+public class Ex4 {
+	
+	static Perfil perfil = new Perfil();
+	static File name;
+	static File password;
+	
+	static boolean usuarioExiste;
+	
+	public static void salvarDados() {
+				
+		String caminhoUsuario = System.getProperty("user.home");
+		File documentos = javax.swing.filechooser.FileSystemView
+				.getFileSystemView()
+				.getDefaultDirectory();
+		
+		File pasta = new File(documentos, "BCraftOStats");
+		pasta.mkdirs();
+		
+		System.out.println("caminho" + documentos.getAbsolutePath());
+		System.out.println(documentos.exists());
+		
+		File BCraftOStats = javax.swing.filechooser.FileSystemView
+				.getFileSystemView()
+				.getDefaultDirectory();
+		
+		File pastaUsuario = new File(pasta, perfil.nome); 
+		
+		password = new File(pastaUsuario, "Password.txt");
+		
+		usuarioExiste = pastaUsuario.exists() && password.exists();
+		System.out.println(usuarioExiste);
+		
+		name = new File(pastaUsuario, "Name.txt");
+		password = new File(pastaUsuario, "Password.txt");
+		
+		if(!usuarioExiste) {
+			pastaUsuario.mkdirs(); 
+			
+			try {
+				name.createNewFile();
+			} catch (IOException e1) {        
+				e1.printStackTrace();         
+			}
+		
+			try {
+				password.createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		try { //escreve dentro do .txt
+			
+			System.out.println(perfil.nome);
+			
+			FileWriter escritor0 = new FileWriter(name, false);
+			escritor0.write(perfil.nome);
+			escritor0.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			FileWriter escritor1 = new FileWriter(password, false);
+			escritor1.write(perfil.senha);
+			escritor1.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+	
+		JPanel Painel = new JPanel();
+		JFrame login = new JFrame("BCraftOS - Login");
+		login.setSize(320,170);
+		login.add(Painel);
+		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		login.setAlwaysOnTop(true);
+		login.setResizable(false);
+		login.setLayout(null);
+		
+		//Perguntas
+		
+		// pergunta o nome do usuario
+		JLabel nomePergunta = new JLabel(" Nome do Usuario "); // definir o 1 texto
+		nomePergunta.setBounds(20, 5, 160, 30); // localização e o tamanho do texto
+		nomePergunta.setFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 15)); // muda a fonte/ letra
+		nomePergunta.setForeground(java.awt.Color.BLACK);// da uma cor ao texto
+		login.add(nomePergunta); // adicional o texto
+		
+		// caixa a onde a pessoa digita o nome de usuario
+		
+		JTextField nomeTitular = new JTextField();
+		nomeTitular.setBounds(20, 35, 250, 30);
+		login.add(nomeTitular);
+		
+		// botão proximo
+		
+		JButton proximaPerg0 = new JButton("Proximo");
+		proximaPerg0.setBounds(20, 90, 120, 30);
+		login.add(proximaPerg0); 
+		
+		// evento do botão proximaPerg0
+		
+		proximaPerg0.addActionListener((ActionEvent e) -> {
+			
+			// pega o nome digitado
+			String nomeDigitado =  nomeTitular.getText().trim();
+			
+			if (nomeDigitado.isEmpty()) {
+				
+				JOptionPane.showMessageDialog(null, "Please type your nickname");
+				return;
+				
+				
+			}
+			
+			
+			perfil.nome = nomeDigitado;
+			
+			File documentos = javax.swing.filechooser.FileSystemView
+					.getFileSystemView()
+					.getDefaultDirectory();
+			
+			File pasta = new File(documentos, "BCraftOStats");
+			File pastaUsuario = new File(pasta, perfil.nome);
+			password = new File(pastaUsuario, "Password.txt");
+			usuarioExiste = pastaUsuario.exists();
+			
+			System.out.println(usuarioExiste);
+			
+			nomePergunta.setVisible(false);
+			nomeTitular.setVisible(false);
+			proximaPerg0.setVisible(false);
+			
+			// pergunta o Senha do usuario
+			JLabel senhaPergunta = new JLabel(" Senha do Usuario "); // definir o 1 texto
+			senhaPergunta.setBounds(20, 5, 160, 30); // localização e o tamanho do texto
+			senhaPergunta.setFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 15)); // muda a fonte/ letra
+			senhaPergunta.setForeground(java.awt.Color.BLACK);// da uma cor ao texto
+			login.add(senhaPergunta); // adicional o texto
+			
+			// caixa a onde a pessoa digita o nome de usuario
+			
+			JTextField senhaTitular = new JTextField();
+			senhaTitular.setBounds(20, 35, 250, 30);
+			login.add(senhaTitular);
+			
+			// botão proximo
+			
+			JButton proximaPerg1 = new JButton("Proximo");
+			proximaPerg1.setBounds(20, 90, 120, 30);
+			login.add(proximaPerg1); 
+			
+			proximaPerg1.addActionListener((ActionEvent ee) -> {
+				
+				// pega o nome digitado
+				String senhaDigitada =  senhaTitular.getText().trim();
+				
+				if (senhaDigitada.isEmpty()) {
+					
+					JOptionPane.showMessageDialog(null, "Please type your password");
+					return;
+					
+					
+				}
+				
+				if(usuarioExiste) {
+				    BufferedReader leitor = null;
+				    
+				    System.out.println("password: " + password);
+				    
+					try {
+						leitor = new BufferedReader(new FileReader(password));
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						String senhaSalva = leitor.readLine();
+						leitor.close();
+						
+						if (senhaDigitada.equals(senhaSalva)) {
+							
+							login.dispose();
+							Menu();
+							
+						}else {
+		
+							JOptionPane.showMessageDialog(null, "senha incorreta");
+							
+						}
+					}catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+				}else {
+				perfil.senha = senhaDigitada;
+				
+				salvarDados();
+				
+				login.dispose();
+				Menu();
+				
+				}
+			});
+		});
+		
+		login.setVisible(true);
+   
+	}
+	
+	public static void Menu() {
+		
+		JPanel Panel = new JPanel();
+		JFrame janela = new JFrame("BCraftOS");
+		janela.setSize(900, 820);
+        janela.add(Panel);
+        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela.setAlwaysOnTop(true);
+        janela.setResizable(false);
+        janela.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        Panel.setLayout(null);
+        
+        JButton contaCorrente = new JButton("Conta corrente");
+        contaCorrente.setBounds(20, 20, 120, 30);
+        contaCorrente.setEnabled(true);
+        contaCorrente.setFont(new Font(null, Font.PLAIN, 12));
+        Panel.add(contaCorrente);
+        
+        JButton Poupança = new JButton("Poupança");
+        Poupança.setFont(new Font(null, Font.PLAIN, 12));
+        Poupança.setBounds(170, 20, 120, 30);
+        Poupança.setEnabled(true);
+        Panel.add(Poupança);
+        
+        JButton dinheiro = new JButton("dinheiro");
+        dinheiro.setFont(new Font(null, Font.PLAIN, 12));
+        dinheiro.setBounds(320, 20, 120, 30);
+        dinheiro.setEnabled(true);
+        Panel.add(dinheiro);
+        
+        JButton sair = new JButton("Sair");
+        sair.setBounds(745, 735, 120, 30);
+        sair.setEnabled(true);
+        sair.setFont(new Font(null, Font.PLAIN, 12));
+        Panel.add(sair);
+        
+        contaCorrente.addActionListener((ActionEvent e) -> {
+        	
+        	contaCorrente.setBounds(745, 20, 120, 30);
+        	contaCorrente.setEnabled(false);
+        	
+        	Poupança.setVisible(false);
+        	sair.setVisible(false);
+        	dinheiro.setVisible(false);
+        	
+        	 JButton Voltar = new JButton("Voltar");
+        	 Voltar.setBounds(745, 735, 120, 30);
+        	 Voltar.setEnabled(true);
+             Panel.add(Voltar);
+             
+             Voltar.addActionListener((ActionEvent ev) -> {
+            	 
+            	 Voltar.setVisible(false);
+            	 Poupança.setVisible(true);
+            	 sair.setVisible(true);
+             	dinheiro.setVisible(true);
+             		
+            	 contaCorrente.setBounds(20, 20, 120, 30);
+             	 contaCorrente.setEnabled(true);
+            	 
+             });
+        	
+        });
+        
+        Poupança.addActionListener((ActionEvent e) -> {
+        	
+        	Poupança.setEnabled(false);
+        	
+        	contaCorrente.setVisible(false);
+        	sair.setVisible(false);
+        	dinheiro.setVisible(false);
+        	Poupança.setBounds(745, 20, 120, 30);
+        	
+        	
+        	 JButton Voltar = new JButton("Voltar");
+        	 Voltar.setBounds(745, 735, 120, 30);
+        	 Voltar.setEnabled(true);
+             Panel.add(Voltar);
+             
+             Voltar.addActionListener((ActionEvent ev) -> {
+            	 
+            	 Voltar.setVisible(false);
+            	 contaCorrente.setVisible(true);
+            	 sair.setVisible(true);
+             	dinheiro.setVisible(true);
+
+            	 
+             	 Poupança.setEnabled(true);
+             	 Poupança.setBounds(170, 20, 120, 30);
+            	 
+             });
+             
+        });
+        
+        dinheiro.addActionListener((ActionEvent e) -> {
+
+        	moneyEasy();
+            
+        });
+        
+        sair.addActionListener((ActionEvent e) -> {
+
+    
+    	janela.dispose();
+        
+        });
+        
+        janela.setVisible(true);
+		
+	}
+	
+	public static void moneyEasy() {
+		
+		JPanel Painel = new JPanel();
+		JFrame login = new JFrame("BCraftOS - money");
+		login.setSize(320,170);
+		login.add(Painel);
+		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		login.setAlwaysOnTop(true);
+		login.setResizable(false);
+		login.setLayout(null);
+		
+		
+		JLabel dinheiroPergunta = new JLabel(" quantidade de dinheiro "); // definir o 1 texto
+		dinheiroPergunta.setBounds(20, 5, 200, 30); // localização e o tamanho do texto
+		dinheiroPergunta.setFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 15)); // muda a fonte/ letra
+		dinheiroPergunta.setForeground(java.awt.Color.BLACK);// da uma cor ao texto
+		login.add(dinheiroPergunta); // adicional o texto
+		
+		//local a onde digita o valor de dinheiro
+				
+		JTextField dinheiroTitular = new JTextField();
+		dinheiroTitular.setBounds(20, 35, 250, 30);
+		login.add(dinheiroTitular);
+		
+		JButton addMoney = new JButton("Adicionar");
+		addMoney.setBounds(20, 90, 120, 30);
+		login.add(addMoney);
+		
+		addMoney.addActionListener((ActionEvent e) -> {
+	        
+			double dinheiro = Double.parseDouble(dinheiroTitular.getText());
+			
+			salvarDados1(dinheiro);
+			
+	    });
+		
+		login.setVisible(true);
+		
+		
+	}
+	
+	public static void salvarDados1(double dinheiro) {
+		
+		File documentos = javax.swing.filechooser.FileSystemView
+				.getFileSystemView()
+				.getDefaultDirectory();
+		
+		File pasta = new File(documentos, "BCraftOStats");
+		File pastaUsuario = new File(pasta, perfil.nome);
+		
+		File money = new File(pastaUsuario, "Money.txt");
+		
+		try {
+			FileWriter escritor = new FileWriter(money, false);
+			escritor.write(String.valueOf(dinheiro));
+			escritor.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+}
+
+
+
